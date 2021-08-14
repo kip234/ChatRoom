@@ -43,12 +43,13 @@ func main()  {
 	redis.Init()
 	db:=Database.InitGorm(&conf.Sql)
 	lobby:=Models.NewLobby("lobby")
-	go lobby.Run(false)//要一直等待连接
-	//房间名
-	rooms:=make(map[string]*Models.ConnPool)
+	blklsts:=make(map[int]*Models.BlockList)
+	go lobby.Run(false,blklsts)//要一直等待连接
+	//
+	rooms:=make(map[string]*Models.ConnPool)//全局通用黑名单
 	//redis.
 	//缓存数据
 	User.Out(db,redis)
-	server:=Routers.BuildRouter(db,&redis,&DefaultJwt,lobby,rooms)
+	server:=Routers.BuildRouter(db,&redis,&DefaultJwt,lobby,rooms,blklsts)
 	server.Run(conf.Addr)
 }

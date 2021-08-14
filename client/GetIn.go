@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -18,6 +19,8 @@ func GetIn(udata *Data.Udata,conn *websocket.Conn){
 	command["lstroom"]=Data.LstRoom
 	command["outroom"]=Data.OutRoom
 	command["nwroom"]=Data.NwRoom
+	command["block"]=Data.Block
+	command["unblk"]=Data.UnBlk
 
 	reader:=bufio.NewReader(os.Stdin)
 
@@ -50,7 +53,7 @@ func GetIn(udata *Data.Udata,conn *websocket.Conn){
 			}
 			cm := Data.Cmd{Code:code}
 			if len(cmd)>1 {
-				cm.Content=cmd[1]
+				cm.Content=cmd[1:]
 			}
 			b,_:=json.Marshal(cm)
 			m.Typ=Data.CmdTyp
@@ -61,11 +64,23 @@ func GetIn(udata *Data.Udata,conn *websocket.Conn){
 					Uid: udata.Uid,
 					Name: udata.Name,
 				},
-				Content:[]byte(s),
+				//Content:[]byte(s),
 			}
-			b,_:=json.Marshal(um)
+			if file,err:=os.Open(s);err==nil{
+				um.Content,err=ioutil.ReadAll(file)
+				if err!=nil{
+					panic(err)
+				}
+				m.Typ=Data.FlTyp
+			}else{
+				um.Content=[]byte(s)
+				m.Typ=Data.UMgTyp
+			}
+			b,err:=json.Marshal(um)
+			if err!=nil{
+				panic(err)
+			}
 			m.Content=b
-			m.Typ=Data.UMgTyp
 		}
 		//发送
 		conn.WriteJSON(m)

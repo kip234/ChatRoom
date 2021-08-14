@@ -12,17 +12,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func BuildRouter(db *gorm.DB,
+func BuildRouter(
+		db *gorm.DB,
 		pool *Redis.RedisPool,
 		template *JWT.Jwt,
 		lobby *Models.ConnPool,
 		rooms map[string]*Models.ConnPool,
+		blklsts map[int]*Models.BlockList,
 	) *gin.Engine {
 	server:=gin.Default()
 
 	group:=server.Group("/", Middlewares.CheakJWT(pool,template))
 	{
-		group.GET("/lobby", Handlers.Lobby(lobby,rooms))
+		group.GET("/lobby", Handlers.Lobby(lobby,rooms,blklsts,db))
 	}
 
 	server.POST("/register", Handlers.Register(db,pool))

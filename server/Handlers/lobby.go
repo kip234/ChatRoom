@@ -3,14 +3,19 @@ package Handlers
 import (
 	"ChatRoom/Models"
 	"ChatRoom/Models/Data"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
-func Lobby(pool *Models.ConnPool,rooms map[string]*Models.ConnPool) gin.HandlerFunc {
+func Lobby(
+		pool *Models.ConnPool,				//emmm...用户连接池?
+		rooms map[string]*Models.ConnPool,	//房间
+		blklsts map[int]*Models.BlockList,	//屏蔽名单
+		sql *gorm.DB,						//SQL链接
+		) gin.HandlerFunc {
 	return func(c *gin.Context){
 		uid,err:= getUid(c)
 		if err!=nil {
@@ -40,7 +45,9 @@ func Lobby(pool *Models.ConnPool,rooms map[string]*Models.ConnPool) gin.HandlerF
 			Typ: Data.SrMTyp,
 			Content: []byte("hello?"),
 		})
+
 		pool.Add(uid,conn)//添加链接
+		blklsts[uid]=Models.NewBlockList(uid)//创建黑名单
 
 		go func() {//接收消息
 			in:=pool.Chan()//发送消息的链接
@@ -55,18 +62,16 @@ func Lobby(pool *Models.ConnPool,rooms map[string]*Models.ConnPool) gin.HandlerF
 					break
 				}
 
-				fmt.Println(m)
-
-				if m.Typ==Data.UMgTyp{
-					in<-m
-				}else if m.Typ==Data.CmdTyp{
-					err=CmdProc(string(m.Content),&home,&in,rooms,uid,conn)
+				if m.Typ==Data.CmdTyp{
+					err=CmdProc(string(m.Content),&home,&in,rooms,uid,conn,blklsts,sql)
 					if err!=nil {
 						conn.WriteJSON(Data.Message{
 							Typ: Data.ErrTyp,
 							Content:[]byte(err.Error()),
 						})
 					}
+				}else{
+					in<-m
 				}
 			}
 		}()

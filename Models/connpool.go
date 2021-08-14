@@ -31,7 +31,7 @@ func (c *ConnPool)IsExit(uid int) (ok bool) {
 	return
 }
 
-func (c *ConnPool)Run(AutoDown bool){
+func (c *ConnPool)Run(AutoDown bool,blacklist map[int]*BlockList){
 	for {
 		if AutoDown&&len(c.links)==0{//没有连接的时候自动退出
 			break
@@ -40,6 +40,9 @@ func (c *ConnPool)Run(AutoDown bool){
 		case data := <-c.in:
 			data.PoolName=c.name//加上标识
 			for uid,i:=range c.links{
+				if blacklist[uid].Blocked(data.Owner){//该信息的所有者被用户屏蔽
+					continue
+				}
 				err:=i.WriteJSON(data)
 				if err!=nil {//认为用户断开
 					c.Del(uid)

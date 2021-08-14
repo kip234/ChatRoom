@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"os"
+	"strconv"
+	"time"
 )
 
 func Rec(conn *websocket.Conn){
@@ -18,14 +21,31 @@ func Rec(conn *websocket.Conn){
 			break
 		}
 
-		if m.Typ==Data.UMgTyp{
+		//fmt.Printf("type:%d\n",m.Typ)
+
+		switch m.Typ{
+		case Data.UMgTyp:
 			um:=Data.UMg{}
 			json.Unmarshal(m.Content,&um)
 			fmt.Printf("[%s]%s:%s\n",m.PoolName,um.Name,um.Content)
-		}else if m.Typ==Data.SrMTyp{
+		case Data.SrMTyp:
 			fmt.Printf("[Server]:%s\n",m.Content)
-		}else if m.Typ==Data.ErrTyp{
+		case Data.ErrTyp:
 			fmt.Printf("[Error]:%s\n",m.Content)
+		case Data.FlTyp:
+			um:=Data.UMg{}
+			json.Unmarshal(m.Content,&um)
+			name:=strconv.FormatInt(time.Now().Unix(),16)//"随机"生成文件名
+			file,err:=os.Create(name)
+			fmt.Printf("%s\n",file.Name())
+			if err!=nil{
+				panic(err)
+			}
+			file.Write(um.Content)
+			file.Close()
+			fmt.Printf("[%s]%s: MAY HAVE SENT A PICTURE\n",m.PoolName,um.Name)
+		default:
+			fmt.Printf("a message of unknown type was received\n %v\n",m)
 		}
 	}
 }
