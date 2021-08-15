@@ -43,7 +43,7 @@ func main() {
 		panic(err)
 	}
 	if m.Typ==Data.ErrTyp {
-		fmt.Println(m.Content)
+		fmt.Printf("Error:%s\n",string(m.Content))
 		return
 	}
 

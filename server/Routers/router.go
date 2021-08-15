@@ -4,6 +4,7 @@ package Routers
 
 import (
 	"ChatRoom/Models"
+	"ChatRoom/Models/Filter"
 	"ChatRoom/Models/JWT"
 	"ChatRoom/Models/Redis"
 	"ChatRoom/server/Handlers"
@@ -19,12 +20,13 @@ func BuildRouter(
 		lobby *Models.ConnPool,
 		rooms map[string]*Models.ConnPool,
 		blklsts map[int]*Models.BlockList,
+		Filter *Filter.Filter,
 	) *gin.Engine {
 	server:=gin.Default()
 
 	group:=server.Group("/", Middlewares.CheakJWT(pool,template))
 	{
-		group.GET("/lobby", Handlers.Lobby(lobby,rooms,blklsts,db))
+		group.GET("/lobby", Handlers.Lobby(lobby,rooms,blklsts,db,Filter))
 	}
 
 	server.POST("/register", Handlers.Register(db,pool))

@@ -88,7 +88,7 @@ func CmdProc(
 			keys=append(keys,key)
 		}
 		c,err:=json.Marshal(keys)
-		fmt.Sprintln(keys)
+		//fmt.Println(keys)
 		if err!=nil {
 			return err
 		}

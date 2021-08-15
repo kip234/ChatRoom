@@ -2,6 +2,7 @@ package main
 
 import (
 	"ChatRoom/Models"
+	"ChatRoom/Models/Filter"
 	"ChatRoom/Models/JWT"
 	"ChatRoom/Models/Redis"
 	"ChatRoom/Models/User"
@@ -10,8 +11,9 @@ import (
 	"ChatRoom/server/config"
 )
 
-const ConfPath 	= "conf.json"	//外部配置文件
-const Secret 	= "I'mTooDishes"//JWT秘钥
+const ConfPath 		= "conf.json"	//外部配置文件
+const Secret 		= "I'mTooDishes"//JWT秘钥
+const SensitiveWords="words.sensitive"//敏感词列表
 var conf config.Conf
 
 var (
@@ -28,8 +30,6 @@ var (
 	}
 )
 
-
-
 func main()  {
 	conf=config.Init(ConfPath)//获取服务器配置
 	var redis = Redis.RedisPool{
@@ -39,6 +39,8 @@ func main()  {
 		MaxIdle:	20,
 		MaxActive:	8,
 	}
+	//过滤器
+	_,Filter:=Filter.NewFilter(SensitiveWords)
 
 	redis.Init()
 	db:=Database.InitGorm(&conf.Sql)
@@ -50,6 +52,6 @@ func main()  {
 	//redis.
 	//缓存数据
 	User.Out(db,redis)
-	server:=Routers.BuildRouter(db,&redis,&DefaultJwt,lobby,rooms,blklsts)
+	server:=Routers.BuildRouter(db,&redis,&DefaultJwt,lobby,rooms,blklsts,Filter)
 	server.Run(conf.Addr)
 }

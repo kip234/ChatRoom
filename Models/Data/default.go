@@ -10,7 +10,7 @@ const (
 	CmdTyp	=1005	//客户端的特殊指令
 )
 
-//客户端的特殊指令值
+//Cmd Code 值
 const (
 	InRoom	=2000	//进入房间
 	NwRoom	=2001	//创建房间
