@@ -5,7 +5,6 @@ import (
 	"ChatRoom/Models/Data"
 	"ChatRoom/Models/Filter"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"gorm.io/gorm"
@@ -66,8 +65,6 @@ func Lobby(
 					break
 				}
 
-				//fmt.Printf("%v\n",m)
-
 				if m.Typ==Data.CmdTyp{
 					err=CmdProc(string(m.Content),&home,&in,rooms,uid,conn,blklsts,sql)
 					if err!=nil {
@@ -80,9 +77,7 @@ func Lobby(
 					if m.Typ==Data.UMgTyp{
 						umg:=Data.UMg{}
 						json.Unmarshal(m.Content,&umg)
-						fmt.Printf("%s\n",string(umg.Content))
 						_,umg.Content=Filter.Process(umg.Content)//过滤一下
-						fmt.Printf("%s\n",string(umg.Content))
 						m.Content,_=json.Marshal(umg)
 					}
 					in<-m

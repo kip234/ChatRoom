@@ -2,28 +2,30 @@ package prefix_tree
 
 //go的byte似乎是十进制ASCII码，传闻ASCII码阈值0x7f=126或者0xFF
 type Prefix_tree struct {
-	roots []*node
+	roots map[byte]*node
+}
+
+func NewPrefix_tree()*Prefix_tree{
+	return &Prefix_tree{
+		roots:make(map[byte]*node),
+	}
 }
 
 //添一条记录
 func (p *Prefix_tree)Add(str []byte){
 	index:=0                //当前str处理的下标
 	lenth:=len(str)         //str长度
-	var now,proc *node //当前指向的节点,要处理的节点
+	var now,proc *node		//当前指向的节点,要处理的节点
 	flag:=false             //匹配状态
 
 	//找根节点
 	proc= newNode(str[index])
-	for _,i:=range p.roots{
-		if proc.IsEqual(i){//有匹配的
-			now=i
-			flag=true
-			break
-		}
+	if _,flag=p.roots[str[index]];flag{//有匹配的
+		now=p.roots[str[index]]
 	}
 
 	if !flag{//没找到?
-		p.roots=append(p.roots,proc)
+		p.roots[str[index]]=proc
 		now=proc
 	}
 	index+=1
@@ -31,16 +33,13 @@ func (p *Prefix_tree)Add(str []byte){
 	for index<lenth{
 		proc= newNode(str[index])
 		flag=false
-		for _,i:=range now.Sons{
-			if proc.IsEqual(i){//有匹配的
-				now=i
-				flag=true
-				break
-			}
+		if _,flag=now.Sons[str[index]];flag{
+			now=now.Sons[str[index]]
 		}
+
 		//没有？
 		if !flag {
-			now.Sons=append(now.Sons,proc)
+			now.Sons[str[index]]=proc
 			now=proc
 		}
 		index+=1
@@ -51,21 +50,16 @@ func (p *Prefix_tree)Add(str []byte){
 func (p *Prefix_tree)Find(str []byte) (re [][2]int) {
 	index:=0                //当前str处理的下标
 	lenth:=len(str)         //str长度
-	var now,proc *node //当前指向的节点,要处理的节点
+	var now *node 			//当前指向的节点,要处理的节点
 	flag:=false             //匹配状态
 	be:=index               //出现的位置
 
 	for index<lenth{
 		//找根节点
-		proc= newNode(str[index])
 		flag=false
-		for _,i:=range p.roots{
-			if proc.IsEqual(i){//有匹配的
-				now=i
-				flag=true
-				index+=1
-				break
-			}
+		if _,flag=p.roots[str[index]];flag{
+			now=p.roots[str[index]]
+			index+=1
 		}
 		if !flag{//没找到?
 			index+=1
@@ -74,14 +68,9 @@ func (p *Prefix_tree)Find(str []byte) (re [][2]int) {
 		}
 		//匹配后续字符
 		for index<lenth{
-			proc= newNode(str[index])
 			flag=false
-			for _,i:=range now.Sons{
-				if proc.IsEqual(i){//有匹配的
-					now=i
-					flag=true
-					break
-				}
+			if _,flag=now.Sons[str[index]];flag{
+				now=now.Sons[str[index]]
 			}
 			if !flag {//没有？
 				be=index

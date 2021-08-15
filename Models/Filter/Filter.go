@@ -8,7 +8,7 @@ import (
 )
 
 type Filter struct{
-	tree    prefix_tree.Prefix_tree
+	tree    *prefix_tree.Prefix_tree
 	replace byte
 }
 
@@ -58,7 +58,9 @@ func NewFilter(name string) (error,*Filter) {
 	s:=string(b)
 	words:=strings.Split(s,"\r\n")
 
-	f:=Filter{}
+	f:=Filter{
+		tree: prefix_tree.NewPrefix_tree(),
+	}
 	f.replace=[]byte(words[0])[0]
 	i:=1
 	nums:=len(words)

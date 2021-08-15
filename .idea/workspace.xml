@@ -5,18 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98d15224-0a2b-4316-8e2a-b1065a2f2be3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Models/Filter/Filter.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Models/Filter/prefix_tree/node.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Models/Filter/prefix_tree/prefix_tree.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/words.sensitive" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Data/default.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Data/default.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Handlers/funcs.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/Handlers/funcs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Filter/Filter.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Filter/Filter.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Filter/prefix_tree/node.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Filter/prefix_tree/node.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Filter/prefix_tree/prefix_tree.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Filter/prefix_tree/prefix_tree.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/Handlers/lobby.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/Handlers/lobby.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routers/router.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
